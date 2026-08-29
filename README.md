@@ -1,0 +1,1 @@
+# aaro-projetos-github-copilot
