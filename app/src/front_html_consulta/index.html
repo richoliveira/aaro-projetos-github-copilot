@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Venda</title>
+    <style>
+        :root {
+            --bg: #d9d9d9;
+            --panel: #efefef;
+            --panel-strong: #ececec;
+            --line: #b9b9b9;
+            --dark: #1f1f1f;
+            --muted: #666;
+            --blue: #cfe3f8;
+            --blue-strong: #4b7bc7;
+            --green: #d8f7d3;
+            --green-strong: #1b8d3b;
+            --red: #f7d7d7;
+            --red-strong: #d64242;
+            --yellow: #f5f0d7;
+            --toolbar: #dfe7ef;
+            --button: #e6e6e6;
+            --button-border: #a4a4a4;
+            --header: #d8d8d8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bg);
+            color: var(--dark);
+        }
+
+        .window {
+            width: 980px;
+            margin: 18px auto;
+            border: 2px solid #a7a7a7;
+            background: #ececec;
+            box-shadow: inset 0 0 0 1px #f3f3f3;
+        }
+
+        .titlebar {
+            position: relative;
+            height: 36px;
+            background: linear-gradient(#dfe7ef, #d1d9e5);
+            border-bottom: 1px solid #a5a9b1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .window-controls {
+            position: absolute;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .icon-button {
+            width: 20px;
+            height: 18px;
+            border: 1px solid #8b8b8b;
+            background: linear-gradient(#f4f4f4, #d9d9d9);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #333;
+        }
+
+        .icon-button.minimize::before {
+            content: "_";
+            font-weight: bold;
+        }
+
+        .icon-button.maximize::before {
+            content: "□";
+        }
+
+        .icon-button.close::before {
+            content: "✕";
+            font-size: 11px;
+        }
+
+        .toolbar {
+            background: #e9ecef;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tool-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .tool-button {
+            width: 36px;
+            height: 30px;
+            border: 1px solid var(--button-border);
+            background: var(--button);
+            box-shadow: inset 0 1px 0 #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .tool-button.green {
+            background: #dff5e1;
+        }
+
+        .tool-button.red {
+            background: #f6d9d9;
+        }
+
+        .tool-button.blue {
+            background: #dfeaf9;
+        }
+
+        .tool-button.yellow {
+            background: #f4f0d9;
+        }
+
+        .tool-button svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .tool-button .icon-plus {
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        .tool-button .icon-pencil::before {
+            content: "✎";
+        }
+
+        .tool-button .icon-delete::before {
+            content: "✕";
+        }
+
+        .tool-button .icon-search::before {
+            content: "⌕";
+        }
+
+        .tool-button .icon-arrow::before {
+            content: "←";
+        }
+
+        .tool-button .icon-right::before {
+            content: "→";
+        }
+
+        .form-panel {
+            padding: 10px 14px 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 18px;
+            margin-bottom: 10px;
+        }
+
+        .field {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .field label {
+            width: 88px;
+            font-size: 14px;
+            color: #222;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            flex: 1;
+            height: 28px;
+            border: 1px solid #a8a8a8;
+            background: #f7f7f7;
+            padding: 0 8px;
+            font-size: 13px;
+        }
+
+        textarea {
+            height: 54px;
+            resize: none;
+            padding-top: 6px;
+        }
+
+        .field select {
+            appearance: none;
+            background-image: linear-gradient(45deg, transparent 50%, #555 50%), linear-gradient(135deg, #555 50%, transparent 50%);
+            background-position: calc(100% - 16px) calc(50% - 2px), calc(100% - 11px) calc(50% - 2px);
+            background-size: 5px 5px, 5px 5px;
+            background-repeat: no-repeat;
+        }
+
+        .field textarea {
+            min-height: 54px;
+        }
+
+        .tabs {
+            display: flex;
+            border: 1px solid var(--line);
+            border-bottom: 0;
+            background: #f1f1f1;
+            margin-top: 10px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px 8px;
+            border-right: 1px solid var(--line);
+            text-align: center;
+            font-size: 12px;
+            color: #4c4c4c;
+            background: #e2e2e2;
+        }
+
+        .tab.active {
+            background: #f5f5f5;
+            font-weight: 700;
+        }
+
+        .content-area {
+            border: 1px solid var(--line);
+            background: #efefef;
+            min-height: 300px;
+            padding: 16px 16px 10px;
+        }
+
+        .vehicle-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 26px;
+            min-height: 240px;
+        }
+
+        .vehicle-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-top: 6px;
+        }
+
+        .vehicle-fields .field {
+            display: grid;
+            grid-template-columns: 90px 1fr;
+            align-items: center;
+        }
+
+        .vehicle-box {
+            border: 1px solid #a6a6a6;
+            background: #efefef;
+            min-height: 170px;
+            position: relative;
+        }
+
+        .vehicle-box::after {
+            content: "";
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            right: 10px;
+            bottom: 12px;
+            border-radius: 3px;
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        @media (max-width: 1024px) {
+            .window {
+                width: 92%;
+            }
+
+            .form-grid,
+            .vehicle-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="window">
+        <div class="titlebar">
+            <span>Venda</span>
+            <div class="window-controls" aria-label="Controles da janela">
+                <span class="icon-button minimize" aria-hidden="true"></span>
+                <span class="icon-button maximize" aria-hidden="true"></span>
+                <span class="icon-button close" aria-hidden="true"></span>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <div class="tool-group">
+                <button class="tool-button green" aria-label="Incluir">
+                    <span class="icon-plus">+</span>
+                </button>
+                <button class="tool-button blue" aria-label="Gravar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M4 19.5V4.5A1.5 1.5 0 0 1 5.5 3H16l4 4v12.5A1.5 1.5 0 0 1 18.5 21h-13A1.5 1.5 0 0 1 4 19.5Z">
+                        </path>
+                        <path d="M8 3v5h8V3"></path>
+                        <path d="M8 13h8"></path>
+                    </svg>
+                </button>
+                <button class="tool-button red" aria-label="Excluir">
+                    <span class="icon-delete">✕</span>
+                </button>
+            </div>
+
+            <div class="tool-group">
+                <button class="tool-button yellow" aria-label="Procurar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="5"></circle>
+                        <path d="m16 16 5 5"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="tool-group" style="margin-left: auto;">
+                <button class="tool-button" aria-label="Anterior">
+                    <span class="icon-arrow">←</span>
+                </button>
+                <button class="tool-button" aria-label="Próximo">
+                    <span class="icon-right">→</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="form-panel">
+            <div class="form-grid">
+                <div class="field">
+                    <label>Código</label>
+                    <input type="text" value="" />
+                </div>
+                <div class="field">
+                    <label>Data</label>
+                    <input type="text" value="" />
+                </div>
+
+                <div class="field">
+                    <label>Cliente</label>
+                    <input type="text" value="" />
+                </div>
+                <div class="field">
+                    <label>Placa</label>
+                    <input type="text" value="" />
+                </div>
+
+                <div class="field">
+                    <label>Telefone</label>
+                    <input type="text" value="" />
+                </div>
+                <div class="field">
+                    <label>Veículo</label>
+                    <input type="text" value="" />
+                </div>
+
+                <div class="field">
+                    <label>Vendedor</label>
+                    <input type="text" value="" />
+                </div>
+                <div class="field">
+                    <label>Observação</label>
+                    <textarea></textarea>
+                </div>
+
+                <div class="field" style="grid-column: 1 / -1; max-width: 60%; margin-left: auto; margin-right: 0;">
+                    <label>Situação</label>
+                    <select>
+                        <option selected></option>
+                        <option>Ativa</option>
+                        <option>Em andamento</option>
+                        <option>Concluída</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active">Dados Veículo</div>
+                <div class="tab">Dados Veículo</div>
+                <div class="tab">Condições Pagamento</div>
+                <div class="tab">Anotações</div>
+                <div class="tab">Recebimentos</div>
+            </div>
+
+            <div class="content-area">
+                <div class="vehicle-layout">
+                    <div class="vehicle-fields">
+                        <div class="field">
+                            <label>Marca</label>
+                            <input type="text" />
+                        </div>
+                        <div class="field">
+                            <label>Modelo</label>
+                            <input type="text" />
+                        </div>
+                        <div class="field">
+                            <label>Cor</label>
+                            <input type="text" />
+                        </div>
+                        <div class="field">
+                            <label>Ano</label>
+                            <input type="text" />
+                        </div>
+                        <div class="field">
+                            <label>Combustível</label>
+                            <input type="text" />
+                        </div>
+                        <div class="field">
+                            <label>Renavam</label>
+                            <input type="text" />
+                        </div>
+                    </div>
+
+                    <div class="vehicle-box" aria-label="Imagem do veículo"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
